@@ -19,6 +19,7 @@ impl Polarity {
 /// # Inputs
 /// - **Input 0**: Frequency (Hz) - can be modulated at audio rate
 /// - **Input 1**: Gate signal - rising edge triggers a new pluck
+///- **Input 3**: Extra excitation signal
 ///
 /// # Outputs
 /// - **Output 0**: Audio signal from the vibrating string
@@ -48,15 +49,19 @@ pub struct CombPluck {
 }
 
 impl CombPluck {
-    /// Create a new plucked string synthesizer.
+    /// Create a new plucked string synthesizer based on damping low pass filter and resonant comb filter.
     ///
     /// # Parameters
     /// - `feedback`: Decay per sample (0.0 to 1.0). Higher = longer sustain.
     /// - `max_delay_seconds`: Maximum delay time for lowest frequency (defines lowest note).
     /// - `excitation_gain`: Volume of initial noise burst (0.0 to 1.0).
+    /// - `damping`: intensity of low pass filter on the feedback line (0.0 to 1.1)
+    /// - `minimum_damping_frequency`: the lowest frequency of the damping filter in hrz
+    /// - `polarity`: The comb filters' polarity
     pub fn new(feedback: f32,
                max_delay_seconds: f32,
-               excitation_gain: f32, damping: f32,
+               excitation_gain: f32,
+               damping: f32,
                minimum_damping_frequency: f32,
                polarity: Polarity) -> Self {
         let sample_rate = DEFAULT_SR as f32;

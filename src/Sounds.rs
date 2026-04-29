@@ -1,10 +1,9 @@
-use std::sync::Arc;
 use fundsp::adsr::adsr_live;
-use midi_fundsp::sound_builders::{Adsr, ProgramTable, simple_sound};
-use midi_fundsp::{SharedMidiState, program_table};
-use fundsp::net::Net;
-use fundsp::prelude::{AudioUnit, U2, db_amp, brown, dcblock, highshelf_hz, join, limiter, envelope, lowpass_hz, mul, pass, resonator_hz, white, moog_hz, An};
-use fundsp::prelude64::{ dsf_saw, dsf_square, highpass_hz, organ, pulse, resonator, saw, shared, sine, soft_saw, square, triangle, var, pluck, constant, highpass, rossler, add, sine_hz, clip,};
+use fundsp::prelude::{brown, db_amp, dcblock, join, limiter, lowpass_hz, mul, pass, resonator_hz, white, AudioUnit, U2};
+use fundsp::prelude64::{clip, constant, highpass, highpass_hz, resonator, sine, sine_hz, };
+use midi_fundsp::sound_builders::{Adsr, ProgramTable, };
+use midi_fundsp::{program_table, SharedMidiState};
+use std::sync::Arc;
 mod instruments;
 use instruments::*;
 
