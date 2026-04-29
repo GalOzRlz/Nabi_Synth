@@ -1,0 +1,13 @@
+[package]
+name = "Fundsp_experiments"
+version = "0.0.1"
+edition = "2024"
+
+[dependencies]
+midi_fundsp = "0.7.1"
+fundsp = {version = "0.23.0", features = ["std", "fft"]}
+midir = "0.10.3"
+anyhow = "1.0.102"
+crossbeam-queue = "0.3.12"
+crossbeam-utils = "0.8.21"
+fastrand = "2.4.1"
