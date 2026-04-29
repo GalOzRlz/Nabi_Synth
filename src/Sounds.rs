@@ -1,10 +1,10 @@
 use fundsp::adsr::adsr_live;
 use fundsp::prelude::{brown, db_amp, dcblock, join, limiter, lowpass_hz, mul, pass, resonator_hz, white, AudioUnit, U2};
-use fundsp::prelude64::{add, clip, constant, highpass, highpass_hz, lowpass, lowpass_q, lowpole, resonator, sine, sine_hz, stack};
+use fundsp::prelude64::{add, afollow, clip, constant, follow, highpass, highpass_hz, lowpass, lowpass_q, lowpole, map, resonator, sine, sine_hz, smooth3, stack};
 use midi_fundsp::sound_builders::{Adsr, ProgramTable, };
 use midi_fundsp::{program_table, SharedMidiState};
 use std::sync::Arc;
-use fundsp::math::xerp;
+use fundsp::math::{cubed, xerp};
 
 mod instruments;
 
@@ -43,15 +43,22 @@ pub fn music_box(state: &SharedMidiState) -> Box<dyn AudioUnit> {
         & (0.3 * resonator_hz(320.0, 25.0))
         & (0.1 * resonator_hz(550.0, 15.0));
 
-    let cutoff_freq_32 = state.get_control_change(74).value() / 127.0;
-    let cutoff_freq_signal = state.control_change_var(74)
-        >> mul(xerp(20.0, 20_000.0, cutoff_freq_32));
+    // set cutoff stream with smoothing
+    let cutoff_freq = state.control_change_var(74)
+        >> map(|frame| {
+        let min_freq = 100.0_f32;
+        let max_freq = 17000.0_f32;
+        let norm = frame[0] / 127.0;
+        let weight = (max_freq / min_freq);
+        min_freq * (weight).powf(norm)
+    })
+        >> follow(0.05_f32);                    // smooth in f64 domain
+
     let combined = tone >> body * db_amp(-4.0) >> highpass_hz(30.0, 0.7);
 
     let synth = Box::new(
-        stack(combined, cutoff_freq_signal)
-            >> lowpass_q(0.5)     // This is the dynamic filter!
-            >> highpass_hz(30.0, 0.7)  // You might want to reorder filters
+        stack(combined, cutoff_freq)
+            >> lowpass_q(0.8)
             >> dcblock::<f64>()
             >> clip(),
     );
