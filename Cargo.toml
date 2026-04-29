@@ -4,7 +4,8 @@ version = "0.0.2"
 edition = "2024"
 
 [dependencies]
-midi_fundsp = "0.7.1"
+# midi_fundsp = "0.7.1"
+midi_fundsp = { git = "https://github.com/GalOzRlz/midi_fundsp", branch = "add_cc_objects" }
 fundsp = {version = "0.23.0", features = ["std", "fft"]}
 midir = "0.10.3"
 anyhow = "1.0.102"
