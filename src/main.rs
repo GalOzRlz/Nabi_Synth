@@ -3,16 +3,12 @@ mod sounds;
 use crate::sounds::favorites;
 use crossbeam_queue::SegQueue;
 use crossbeam_utils::atomic::AtomicCell;
+use midi_fundsp::io::get_first_midi_device;
 use midi_fundsp::{
-    io::{
-        Speaker, SynthMsg, console_choice_from, start_input_thread,
-        start_output_thread,
-    },
+    io::{Speaker, SynthMsg, console_choice_from, start_input_thread, start_output_thread},
     sound_builders::ProgramTable,
 };
 use midir::MidiInput;
-use midi_fundsp::io::get_first_midi_device;
-
 
 fn main() -> anyhow::Result<()> {
     let reset = Arc::new(AtomicCell::new(false));
