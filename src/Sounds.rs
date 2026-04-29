@@ -1,10 +1,9 @@
 use fundsp::adsr::adsr_live;
-use fundsp::prelude::{brown, db_amp, dcblock, join, limiter, lowpass_hz, mul, pass, resonator_hz, white, AudioUnit, U2};
-use fundsp::prelude64::{add, afollow, clip, constant, follow, highpass, highpass_hz, lowpass, lowpass_q, lowpole, map, resonator, sine, sine_hz, smooth3, stack};
+use fundsp::prelude::{db_amp, dcblock, join, lowpass_hz, mul, pass, resonator_hz, AudioUnit, U2};
+use fundsp::prelude64::{clip, follow, highpass_hz, lowpass_q, map, sine, stack};
 use midi_fundsp::sound_builders::{Adsr, ProgramTable, };
 use midi_fundsp::{program_table, SharedMidiState};
 use std::sync::Arc;
-use fundsp::math::{cubed, xerp};
 
 mod instruments;
 
