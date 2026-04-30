@@ -24,18 +24,8 @@ fn main() -> anyhow::Result<()> {
         while reset.load() {}
         start_input_thread(midi_msgs.clone(), midi_in, in_port, reset.clone());
         let program_table = Arc::new(Mutex::new(sounds::favorites()));
-        start_output_thread::<6>(midi_msgs.clone(), program_table.clone());
+        start_output_thread::<10>(midi_msgs.clone(), program_table.clone());
         run_chooser(midi_msgs, program_table.clone(), reset.clone(), &mut quit);
-        std::thread::spawn(move || {
-            loop {
-                if let Some(msg) = inputs.pop() {
-                    if let Some((note, velocity)) = msg.note_velocity() {
-                        println!("note: {note} velocity: {velocity}");
-                    }
-                    outputs.push(msg);
-                }
-            }
-        });
     }
     Ok(())
 }

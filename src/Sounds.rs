@@ -10,14 +10,14 @@ use instruments::*;
 /// Returns a `ProgramTable` containing sounds that are personal favorites of the crate author.
 pub fn favorites() -> ProgramTable {
     program_table![
-        ("Yavin-Plucked", modal_plucked_string),
-        ("Yavin-Bell", modal_bell),
-        ("Yavin-Struck-Bar", modal_struck_bar),
+        ("Modal Plucked string", modal_plucked_string),
+        ("Bell", modal_bell),
+        ("Music Box", modal_struck_bar),
         ("Egogo-Drum", modal_membrane),
-        ("yav-wg-blownpipe", breathy),
-        ("Harpsichord", harpsichord),
+        ("Modal Airy Pad", breathy),
+        ("Waveguide Harpsichord", harpsichord),
         ("Plastic Pipe", plastic_pipe),
-        ("dirty guitar", dirty_guitar)
+        ("Dirty Guitar", dirty_guitar)
     ]
 }
 
