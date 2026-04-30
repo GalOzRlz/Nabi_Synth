@@ -1,8 +1,8 @@
 use fundsp::adsr::adsr_live;
-use fundsp::prelude::{AudioUnit, U2, db_amp, dcblock, join, lowpass_hz, mul, pass, resonator_hz};
-use fundsp::prelude64::{clip, follow, highpass_hz, lowpass_q, map, sine, stack};
+use fundsp::prelude::{db_amp, dcblock, join, mul, pass, resonator_hz, AudioUnit, U2};
+use fundsp::prelude64::{clip, follow, highpass_hz, lowpass_q, map, sine};
 use midi_fundsp::sound_builders::{Adsr, ProgramTable};
-use midi_fundsp::{SharedMidiState, program_table};
+use midi_fundsp::{program_table, SharedMidiState};
 use std::sync::Arc;
 
 mod instruments;
@@ -12,6 +12,7 @@ pub fn favorites() -> ProgramTable {
     program_table![("Yavin-Plucked", music_box)]
 }
 
+/// Something between a celesta and a prepared-piano with filter cutoff mapped to midi CC 74
 pub fn music_box(state: &SharedMidiState) -> Box<dyn AudioUnit> {
     let synth_adsr = Adsr {
         attack: 0.002,
@@ -35,8 +36,7 @@ pub fn music_box(state: &SharedMidiState) -> Box<dyn AudioUnit> {
             * (gate.clone() >> adsr_live(0.002, 0.5 / 10.0, 0.0, synth_adsr.release))
         & (mul(13.34) >> sine() * a4)
             * (gate.clone() >> adsr_live(0.002, 0.5 / 18.0, 0.0, synth_adsr.release))
-            >> lowpass_hz(9000.0, 0.7))
-        >> dcblock::<f64>();
+        >> dcblock::<f64>());
 
     let tone = modes >> (pass() ^ (highpass_hz(100.0, 0.7) * 0.10)) >> join::<U2>();
     let body = (pass() * 0.7)
@@ -50,14 +50,13 @@ pub fn music_box(state: &SharedMidiState) -> Box<dyn AudioUnit> {
             let min_freq = 100.0_f32;
             let max_freq = 17000.0_f32;
             let norm = frame[0] / 127.0;
-            let weight = (max_freq / min_freq);
-            min_freq * (weight).powf(norm)
+            min_freq * max_freq / min_freq.powf(norm)
         })
-        >> follow(0.05_f32); // smooth in f64 domain
+        >> follow(0.05_f32); // smoothing
 
-    let combined = tone >> body * db_amp(-4.0) >> highpass_hz(30.0, 0.7);
+    let combined = tone >> body >> highpass_hz(30.0, 0.7) * db_amp(-4.0) ;
 
     let synth =
-        Box::new(stack(combined, cutoff_freq) >> lowpass_q(0.8) >> dcblock::<f64>() >> clip());
+        Box::new((combined | cutoff_freq) >> lowpass_q(0.8) >> dcblock::<f64>() >> clip());
     state.assemble_unpitched_sound(synth, synth_adsr.boxed(state))
 }

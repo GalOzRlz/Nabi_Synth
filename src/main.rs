@@ -1,11 +1,12 @@
 use std::sync::{Arc, Mutex};
 mod sounds;
+
 use crate::sounds::favorites;
 use crossbeam_queue::SegQueue;
 use crossbeam_utils::atomic::AtomicCell;
 use midi_fundsp::io::get_first_midi_device;
 use midi_fundsp::{
-    io::{Speaker, SynthMsg, console_choice_from, start_input_thread, start_output_thread},
+    io::{console_choice_from, start_input_thread, start_output_thread, Speaker, SynthMsg},
     sound_builders::ProgramTable,
 };
 use midir::MidiInput;
