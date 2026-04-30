@@ -1,6 +1,6 @@
 use fundsp::adsr::adsr_live;
-use fundsp::prelude::{db_amp, dcblock, join, mul, pass, resonator_hz, AudioUnit, U2};
-use fundsp::prelude64::{clip, follow, highpass_hz, lowpass_q, map, sine};
+use fundsp::prelude::{constant, db_amp, dcblock, join, mul, pass, resonator_hz, AudioUnit, U2};
+use fundsp::prelude64::{clip, follow, highpass_hz, lowpass_q, map, product, sine};
 use midi_fundsp::sound_builders::{Adsr, ProgramTable};
 use midi_fundsp::{program_table, SharedMidiState};
 use std::sync::Arc;
@@ -39,24 +39,17 @@ pub fn music_box(state: &SharedMidiState) -> Box<dyn AudioUnit> {
         >> dcblock::<f64>());
 
     let tone = modes >> (pass() ^ (highpass_hz(100.0, 0.7) * 0.10)) >> join::<U2>();
-    let body = (pass() * 0.7)
+    let body = (pass() * 0.4)
         & (0.5 * resonator_hz(150.0, 20.0))
         & (0.3 * resonator_hz(320.0, 25.0))
         & (0.1 * resonator_hz(550.0, 15.0));
 
     // set cutoff stream with smoothing
-    let cutoff_freq = state.control_change_var(74)
-        >> map(|frame| {
-            let min_freq = 100.0_f32;
-            let max_freq = 17000.0_f32;
-            let norm = frame[0] / 127.0;
-            min_freq * max_freq / min_freq.powf(norm)
-        })
-        >> follow(0.05_f32); // smoothing
-
+    let cutoff_val = state.control_change_var(74);
+    let max_cutoff_hz = 5_000.0;
     let combined = tone >> body >> highpass_hz(30.0, 0.7) * db_amp(-4.0) ;
-
+    let cutoff_hrz = product(constant(max_cutoff_hz/127.0), cutoff_val);
     let synth =
-        Box::new((combined | cutoff_freq) >> lowpass_q(0.8) >> dcblock::<f64>() >> clip());
+        Box::new((combined | cutoff_hrz >> follow(0.05_f32)) >> lowpass_q(2.0) >> dcblock::<f64>() >> clip());
     state.assemble_unpitched_sound(synth, synth_adsr.boxed(state))
 }
