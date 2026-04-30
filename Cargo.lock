@@ -671,7 +671,7 @@ dependencies = [
 [[package]]
 name = "midi_fundsp"
 version = "0.7.2"
-source = "git+https://github.com/GalOzRlz/midi_fundsp?branch=add_cc_objects#d9c57c178e1cd5fa140a6f7943729b252b5808d2"
+source = "git+https://github.com/GalOzRlz/midi_fundsp?branch=master#e8ae02f8cdfa04768098dd3773e070dd1f895d8d"
 dependencies = [
  "anyhow",
  "bare_metal_modulo",
