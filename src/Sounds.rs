@@ -1,9 +1,8 @@
-use std::io::sink;
 use fundsp::adsr::adsr_live;
-use fundsp::prelude::{AudioUnit, U2, brown, db_amp, dcblock, join, limiter, lowpass_hz, mul, pass, resonator_hz, white, reverb_stereo};
-use fundsp::prelude64::{clip, constant, highpass, highpass_hz, multipass, resonator, sine, sine_hz, split};
-use midi_fundsp::{SharedMidiState, program_table};
+use fundsp::prelude::{brown, db_amp, dcblock, join, limiter, lowpass_hz, mul, pass, resonator_hz, white, AudioUnit, U2};
+use fundsp::prelude64::{clip, constant, highpass, highpass_hz, resonator, sine, sine_hz};
 use midi_fundsp::sound_builders::*;
+use midi_fundsp::{program_table, SharedMidiState};
 mod instruments;
 use instruments::*;
 
