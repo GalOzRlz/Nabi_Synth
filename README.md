@@ -6,7 +6,7 @@ The endgame is a synth running on an SBC connected to your midi controller of ch
 Future plans are:
 * ~~adding real time controls over midi cc~~
 * support for more stereo manipulations (some already implemented)
-* more sytnhesis engines and instruments to chose from
+* more synthesis engines and instruments to choose from (including classic analog ones)
 * save your instruments state after manipulations with CC
 * library of ready-to-drop effects for easier instrument creation via graphs
 * streamlined midi control over 0-8 params of each instruments with configurable mapping
