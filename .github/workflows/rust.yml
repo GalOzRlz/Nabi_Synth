@@ -16,10 +16,6 @@ jobs:
     steps:
     - name: Install ALSA development libraries
       run: |
-<<<<<<< linux_folder_structure
-=======
-        sudo apt-get update
->>>>>>> master
         sudo apt-get install -y libasound2-dev pkg-config
     - uses: actions/checkout@v4
     - name: Build
