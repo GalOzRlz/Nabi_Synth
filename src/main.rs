@@ -1,12 +1,13 @@
 use std::sync::{Arc, Mutex};
 mod sounds;
 
-use crate::sounds::favorites;
 use crossbeam_queue::SegQueue;
 use crossbeam_utils::atomic::AtomicCell;
-use midi_fundsp::io::get_first_midi_device;
 use midi_fundsp::{
-    io::{console_choice_from, start_input_thread, start_output_thread, Speaker, SynthMsg},
+    io::{
+        Speaker, SynthMsg, console_choice_from, get_first_midi_device, start_input_thread,
+        start_output_thread,
+    },
     sound_builders::ProgramTable,
 };
 use midir::MidiInput;
@@ -17,35 +18,14 @@ fn main() -> anyhow::Result<()> {
     while !quit {
         let mut midi_in = MidiInput::new("midir reading input")?;
         let in_port = get_first_midi_device(&mut midi_in)?;
-        let incoming_msgs = Arc::new(SegQueue::new());
-        let outgoing_msgs = Arc::new(SegQueue::new());
+        let midi_msgs = Arc::new(SegQueue::new());
         while reset.load() {}
-        start_input_thread(incoming_msgs.clone(), midi_in, in_port, reset.clone());
-        let program_table = Arc::new(Mutex::new(favorites()));
-        start_output_thread::<10>(outgoing_msgs.clone(), program_table.clone());
-        run_midi_show_thread(incoming_msgs, outgoing_msgs.clone());
-        run_chooser(
-            outgoing_msgs,
-            program_table.clone(),
-            reset.clone(),
-            &mut quit,
-        );
+        start_input_thread(midi_msgs.clone(), midi_in, in_port, reset.clone());
+        let program_table = Arc::new(Mutex::new(sounds::favorites()));
+        start_output_thread::<10>(midi_msgs.clone(), program_table.clone());
+        run_chooser(midi_msgs, program_table.clone(), reset.clone(), &mut quit);
     }
     Ok(())
-}
-
-fn run_midi_show_thread(
-    incoming_msgs: Arc<SegQueue<SynthMsg>>,
-    outgoing_msgs: Arc<SegQueue<SynthMsg>>,
-) {
-    std::thread::spawn(move || {
-        loop {
-            if let Some(msg) = incoming_msgs.pop() {
-                println!("{msg:?}");
-                outgoing_msgs.push(msg);
-            }
-        }
-    });
 }
 
 fn run_chooser(
@@ -61,7 +41,7 @@ fn run_chooser(
             0 => {
                 let program = {
                     let program_table = program_table.lock().unwrap();
-                    console_choice_from("Change synth to", &program_table, |opt| opt.0.as_str())
+                    console_choice_from("Change synth to", &program_table.entries, |opt| opt.0.as_str())
                 };
                 midi_msgs.push(SynthMsg::program_change(program as u8, Speaker::Both));
             }

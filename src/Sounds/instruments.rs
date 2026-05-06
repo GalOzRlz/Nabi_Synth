@@ -254,9 +254,16 @@ fn pluck_generic(
 }
 
 pub fn pluck_comb_string() -> An<CombPluck> {
-    pluck_generic(0.995, 0.1, 0.5, 0.15, Polarity::Positive)
+    pluck_generic(0.995, 0.1, 0.5, 0.01, Polarity::Positive)
 }
 
 pub fn hit_comb_pipe() -> An<CombPluck> {
     pluck_generic(0.995, 0.1, 0.7, 0.75, Polarity::Negative)
 }
+
+pub fn dirty_guitar() -> fn(Net, An<Var>) -> Net {
+    let mix = move |pitch: Net, gate: An<Var>|
+        (pitch | gate.clone() | constant(0.0)) >> pluck_comb_string() >> lowpass_hz(9000.0, 0.5);
+    mix
+}
+
