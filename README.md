@@ -10,5 +10,7 @@ Future plans are:
 * more synthesis engines and instruments to choose from (including classic analog ones)
 * save your instruments state after manipulations with CC
 * library of ready-to-drop effects for easier instrument creation via graphs
+* global synth effects chain (midi fundsp feature)
+* global LFO and/or ADSR envelope (midi fundsp feature)
 * streamlined midi control over 0-8 params of each instruments with configurable mapping
 * support for external screen showing instrument and impact of CC change?
