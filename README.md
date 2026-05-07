@@ -1,7 +1,8 @@
 A [FunDSP](https://github.com/SamiPerttu/fundsp/tree/master) based synth specializing in physical modeling techniques.
 
 Currently holding one engine for Waveguide style synthesis on top of the [Midi_fundsp](https://github.com/gjf2a/midi_fundsp) framework.
-The endgame is a synth running on an SBC connected to your midi controller of choice.
+
+The endgame is a stereo synth running on an affordable SBC connected to your midi controller of choice.
 
 Future plans are:
 * ~~adding real time controls over midi cc~~
