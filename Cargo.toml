@@ -4,9 +4,9 @@ version = "0.0.2"
 edition = "2024"
 
 [dependencies]
-midi_fundsp = { git = "https://github.com/GalOzRlz/midi_fundsp", branch = "true_stereo"}
+midi_fundsp = { git = "https://github.com/GalOzRlz/midi_fundsp", branch = "voice_stealing_config"}
 fundsp = {version = "0.23.0", features = ["std", "fft"]}
-midir = "0.10.3"
+midir = "0.11.0"
 anyhow = "1.0.102"
 crossbeam-queue = "0.3.12"
 crossbeam-utils = "0.8.21"
