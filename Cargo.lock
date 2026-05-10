@@ -723,7 +723,7 @@ dependencies = [
 [[package]]
 name = "midi_fundsp"
 version = "0.8.0"
-source = "git+https://github.com/GalOzRlz/midi_fundsp?branch=voice_stealing_config#b91c10d21155f7fc69ce021c642cf06d6117104b"
+source = "git+https://github.com/GalOzRlz/midi_fundsp?branch=master#635a9842e387df3de5caae0859b5c727473f4549"
 dependencies = [
  "anyhow",
  "bare_metal_modulo",
