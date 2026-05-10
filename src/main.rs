@@ -10,10 +10,12 @@ use midi_fundsp::{
     },
     sound_builders::ProgramTable,
 };
+use midi_fundsp::config::Config;
 use midir::MidiInput;
 
 fn main() -> anyhow::Result<()> {
     let reset = Arc::new(AtomicCell::new(false));
+    let config = Config::default();
     let mut quit = false;
     while !quit {
         let mut midi_in = MidiInput::new("midir reading input")?;
@@ -22,7 +24,7 @@ fn main() -> anyhow::Result<()> {
         while reset.load() {}
         start_input_thread(midi_msgs.clone(), midi_in, in_port, reset.clone());
         let program_table = Arc::new(Mutex::new(sounds::favorites()));
-        start_output_thread::<5>(midi_msgs.clone(), program_table.clone());
+        start_output_thread::<12>(midi_msgs.clone(), program_table.clone(), Some(config.clone()));
         run_chooser(midi_msgs, program_table.clone(), reset.clone(), &mut quit);
     }
     Ok(())
