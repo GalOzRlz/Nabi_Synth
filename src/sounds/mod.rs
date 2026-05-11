@@ -16,7 +16,7 @@ pub fn favorites() -> ProgramTable {
         ("Modal Airy Pad", breathy),
         ("Waveguide Harpsichord", harpsichord),
         ("Plastic Pipe", plastic_pipe),
-        ("stereo Guitar", (dirty_guitar_stereo_l, dirty_guitar_stereo_r))
+        ("Chorus Guitar", dirty_guitar_stereo)
     ]
 }
 
@@ -254,7 +254,7 @@ pub fn plastic_pipe(state: &SharedMidiState) -> Box<dyn AudioUnit> {
     state.assemble_pitched_sound(Box::new(mix), adsr.boxed(state))
 }
 
-pub fn dirty_guitar_stereo_l(state: &SharedMidiState) -> Box<dyn AudioUnit> {
+pub fn dirty_guitar_stereo(state: &SharedMidiState) -> Box<dyn AudioUnit> {
     let adsr = Adsr {
         attack: 0.005,
         decay: 0.8,
@@ -267,19 +267,4 @@ pub fn dirty_guitar_stereo_l(state: &SharedMidiState) -> Box<dyn AudioUnit> {
     let gate = state.control_var();
     let dg = dirty_guitar();
     state.assemble_pitched_sound(Box::new(dg(pitch1, gate.clone())), adsr.boxed(state))
-}
-
-pub fn dirty_guitar_stereo_r(state: &SharedMidiState) -> Box<dyn AudioUnit> {
-    let adsr = Adsr {
-        attack: 0.005,
-        decay: 0.85,
-        sustain: 0.9,
-        release: 0.15,
-    };
-    let base_pitch = state.bent_pitch();
-    let lfo2 = sine_hz(3.5) * 0.0065;
-    let pitch2 = base_pitch.clone() * (constant(1.0) + lfo2);
-    let gate = state.control_var();
-    let dg = dirty_guitar();
-    state.assemble_pitched_sound(Box::new(dg(pitch2, gate.clone())), adsr.boxed(state))
 }

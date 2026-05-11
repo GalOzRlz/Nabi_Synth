@@ -723,7 +723,7 @@ dependencies = [
 [[package]]
 name = "midi_fundsp"
 version = "0.8.0"
-source = "git+https://github.com/GalOzRlz/midi_fundsp?branch=master#635a9842e387df3de5caae0859b5c727473f4549"
+source = "git+https://github.com/GalOzRlz/midi_fundsp_nabi?branch=master#635a9842e387df3de5caae0859b5c727473f4549"
 dependencies = [
  "anyhow",
  "bare_metal_modulo",
