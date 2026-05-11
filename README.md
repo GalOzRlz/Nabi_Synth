@@ -7,13 +7,12 @@ Our goal is creating a truely affordable (35-45 USD) no-solder stereo synth runn
 Future plans are:
 * ~~adding real time controls over midi cc~~
 * full wiki manual that covers all the steps: from purchasing parts to bootstrapping the synth.
-* design files for a 3D printed case / manual for case assembly using off the shelf parts (with links)
-* support for saving and loading presets based on CC value
-* support for more stereo manipulations (some already implemented)
+* support for saving and loading presets from the midi controller
+* ~~support for more stereo manipulations (some already implemented)~~
 * more synthesis engines and instruments to choose from (including classic analog ones)
-* save your instruments state after manipulations with CC
-* library of ready-to-drop effects for easier instrument creation via graphs
-* global synth effects chain (midi fundsp feature)
+* library of ready-to-drop effects and oscillators for easier instrument
+* ~~master bus effects chain~~
 * global LFO and/or ADSR envelope
-* streamlined midi control ove 8 params of each instruments with configurable mapping
-* support for external screen showing instrument and impact of CC change
+* streamlined midi control ove 8 params of each instruments with configurable override-mapping via toml files
+* on board web-based editor you can connect to manage your synth
+* support for external screen showing current instrument and impact of CC change
