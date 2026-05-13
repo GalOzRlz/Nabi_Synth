@@ -4,10 +4,8 @@ version = "0.0.2"
 edition = "2024"
 
 [dependencies]
-midi_fundsp = { git = "https://github.com/GalOzRlz/midi_fundsp_nabi", branch = "master"}
-fundsp = {version = "0.23.0", features = ["std", "fft"]}
+nabi_core = { git = "https://github.com/GalOzRlz/nabi_core", branch = "master"}
 midir = "0.11.0"
 anyhow = "1.0.102"
 crossbeam-queue = "0.3.12"
 crossbeam-utils = "0.8.21"
-fastrand = "2.4.1"

@@ -1,0 +1,5 @@
+[[program]]
+function = "clavichord_soft"
+name = "soft casio harpsichord"
+cc = [0.35, 0.3, 0, 1.0]
+tuning = "just intonation"

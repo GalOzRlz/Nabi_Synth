@@ -1,38 +1,41 @@
 use std::sync::{Arc, Mutex};
-mod sounds;
 
 use crossbeam_queue::SegQueue;
 use crossbeam_utils::atomic::AtomicCell;
-use midi_fundsp::{
+use nabi_core::{
     io::{
-        Speaker, SynthMsg, console_choice_from, get_first_midi_device, start_input_thread,
+        Speaker, SynthMsg, choose_midi_device, console_choice_from, start_input_thread,
         start_output_thread,
     },
-    sound_builders::ProgramTable,
+    patch_builder::PatchTable,
 };
-use midi_fundsp::config::Config;
 use midir::MidiInput;
+use nabi_core::config_builder::{create_ordered_patch_table, load_global_config};
 
 fn main() -> anyhow::Result<()> {
     let reset = Arc::new(AtomicCell::new(false));
-    let config = Config::default();
     let mut quit = false;
     while !quit {
+        let global_config = load_global_config();
         let mut midi_in = MidiInput::new("midir reading input")?;
-        let in_port = get_first_midi_device(&mut midi_in)?;
+        let in_port = choose_midi_device(&mut midi_in)?;
         let midi_msgs = Arc::new(SegQueue::new());
         while reset.load() {}
         start_input_thread(midi_msgs.clone(), midi_in, in_port, reset.clone());
-        let program_table = Arc::new(Mutex::new(sounds::favorites()));
-        start_output_thread::<12>(midi_msgs.clone(), program_table.clone(), Some(config.clone()));
-        run_chooser(midi_msgs, program_table.clone(), reset.clone(), &mut quit);
+        let patch_table = Arc::new(Mutex::new(
+            create_ordered_patch_table(
+                &["patches_config/community.toml", "patches_config/builtin.toml"],
+                &"order.toml",
+            )));
+        start_output_thread::<10>(midi_msgs.clone(), patch_table.clone(), Option::from(global_config));
+        run_chooser(midi_msgs, patch_table, reset.clone(), &mut quit);
     }
     Ok(())
 }
 
 fn run_chooser(
     midi_msgs: Arc<SegQueue<SynthMsg>>,
-    program_table: Arc<Mutex<ProgramTable>>,
+    patch_table: Arc<Mutex<PatchTable>>,
     reset: Arc<AtomicCell<bool>>,
     quit: &mut bool,
 ) {
@@ -42,10 +45,12 @@ fn run_chooser(
         match console_choice_from("Choice", &main_menu, |s| *s) {
             0 => {
                 let program = {
-                    let program_table = program_table.lock().unwrap();
-                    console_choice_from("Change synth to", &program_table.entries, |opt| opt.0.as_str())
+                    let patch_table = patch_table.lock().unwrap();
+                    console_choice_from("Change synth to", &patch_table.entries, |opt| {
+                        opt.0.as_str()
+                    })
                 };
-                midi_msgs.push(SynthMsg::program_change(program as u8, Speaker::Both));
+                midi_msgs.push(SynthMsg::patch_change(program as u8, Speaker::Both));
             }
             1 => reset.store(true),
             2 => *quit = true,
